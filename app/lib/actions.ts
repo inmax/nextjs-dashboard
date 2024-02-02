@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
-
+import { redirect } from 'next/navigation';
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string(),
@@ -28,4 +28,6 @@ export async function createInvoice(formData: FormData) {
 `;
 // Vacía el router cache en el navegador para ese path. Como consecuencia se lanza una nueva petición HTTP y en  el  servidor se hace una nueva consulta a base de datos para actulizar el listado de facturas
   revalidatePath('/dashboard/invoices');
+  // use effect para redireccionar a la pantalla donde se mostrarán los datos actulizados
+  redirect('/dashboard/invoices');
 }
