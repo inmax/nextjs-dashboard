@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
+import { revalidatePath } from 'next/cache';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -25,4 +26,6 @@ export async function createInvoice(formData: FormData) {
   INSERT INTO invoices (customer_id, amount, status, date)
   VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
 `;
+// Vacía el router cache en el navegador para ese path. Como consecuencia se lanza una nueva petición HTTP y en  el  servidor se hace una nueva consulta a base de datos para actulizar el listado de facturas
+  revalidatePath('/dashboard/invoices');
 }
